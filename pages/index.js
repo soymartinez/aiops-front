@@ -43,7 +43,9 @@ export default function Home() {
             </form>
             <div className={`relative rounded-lg border border-dashed p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
               <div className={`uppercase transition-all duration-300 ${data ? 'absolute leading-4 -top-2.5 tracking-widest flex space-x-1 text-[9px] left-4' : 'top-2 font-bold w-min'}`}>
-                <div className={`rounded-full shadow-[0_0_1px_3px_black] ${data ? 'bg-[#27272a] px-1.5' : 'animate-[nodata_1s_ease-in-out_1]'} ${loading ? 'animate-[highlight_1s_ease-in-out_1]' : ''} text-[#71717a]`}>
+                <div className={`rounded-full shadow-[0_0_1px_3px_black] text-[#71717a] 
+                ${data ? 'bg-[#27272a] px-1.5' : 'animate-[nodata_1s_ease-in-out_1]'}
+                ${loading && data ? 'animate-[highlight_1s_ease-in-out_1]' : ''}`}>
                   Resultado
                 </div>
               </div>
