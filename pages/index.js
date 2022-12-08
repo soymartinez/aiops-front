@@ -1,9 +1,16 @@
 import Head from 'next/head'
+import Image from 'next/image'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 
 export default function Home() {
-  const [data, setData] = useState(null)
+  const [linear, setLinear] = useState(null)
+  const [resnet, setResnet] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [modal, setModal] = useState('lineal')
+  const [file, setFile] = useState(null)
+
   const handleClick = async (e) => {
     e.preventDefault()
     setLoading(false)
@@ -16,7 +23,27 @@ export default function Home() {
       body: target,
     })
       .then((res) => res.json())
-      .then((data) => { setData(data); setLoading(true) })
+      .then((linear) => { setLinear(linear); setLoading(true) })
+  }
+
+  const handleImage = async (e) => {
+    e.preventDefault()
+    if (e.target.files[0]) {
+      setFile(e.target.files[0])
+      setLoading(false)
+      const reader = new FileReader()
+      reader.readAsDataURL(e.target.files[0])
+      reader.onload = () => {
+        const base64 = reader.result.split(',')[1]
+        fetch(`/api/resnet`, {
+          method: 'POST',
+          body: base64,
+        })
+          .then((res) => res.json())
+          .then((resnet) => { setResnet(resnet); setLoading(true) })
+      }
+    }
+
   }
 
   return (
@@ -28,33 +55,114 @@ export default function Home() {
       </Head>
 
       <main className='w-screen h-screen'>
-        <section className='flex flex-col justify-center gap-4 max-w-lg mx-auto px-4 h-5/6'>
-          <div>
-            <h1 className='font-bold text-5xl md:text-6xl'>Regresión lineal</h1>
-            <p className='text-end'>Dolares a pesos: <strong>$1 &rarr; $19.44</strong></p>
+        <div className='flex flex-col justify-center gap-12 max-w-lg mx-auto px-4 overflow-hidden md:overflow-visible'>
+          <div className='grid grid-cols-2 gap-16 truncate mt-4 sm:mt-52'>
+            <button onClick={() => setModal('lineal')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
+              ${modal === 'lineal' ? 'bg-[#0070f3] text-white' : 'border border-dashed border-[#3f3f46] text-gray-100 hover:border-[#71717a] hover:text-white'}
+            `}>
+              Linear regression
+            </button>
+            <button onClick={() => setModal('resnet')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
+              ${modal === 'resnet' ? 'bg-[#0070f3] text-white' : 'border border-dashed border-[#3f3f46] text-gray-100 hover:border-[#71717a] hover:text-white'}
+            `}>
+              Resnet
+            </button>
           </div>
-          <div className='space-y-9'>
-            <form onSubmit={(e) => handleClick(e)} className='flex flex-col sm:flex-row gap-2'>
-              <input type={'number'} min={1} defaultValue={1} name={'amount'} required
-                className={`border-2 pl-4 border-[#0070F3] outline-none bg-transparent rounded-lg p-2 w-full placeholder:text-[#3f3f46]`} placeholder={'Cantidad de dolares'} />
-              <button type={'submit'} className='bg-[#0070f3] rounded-lg px-3 py-2 text-md font-medium'>
-                Convertir
-              </button>
-            </form>
-            <div className={`relative rounded-lg border border-dashed p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
-              <div className={`uppercase transition-all duration-300 ${data ? 'absolute leading-4 -top-2.5 tracking-widest flex space-x-1 text-[9px] left-4' : 'top-2 font-bold w-min'}`}>
-                <div className={`rounded-full shadow-[0_0_1px_3px_black] text-[#71717a] 
-                ${data ? 'bg-[#27272a] px-1.5' : 'animate-[nodata_1s_ease-in-out_1]'}
-                ${loading && data ? 'animate-[highlight_1s_ease-in-out_1]' : ''}`}>
-                  Resultado
+          {modal === 'lineal' &&
+            <AnimatePresence>
+              <motion.section
+                key='linear'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7, ease: 'easeInOut' }}
+                exit={{ opacity: 0 }}
+                className='flex flex-col justify-center gap-4'
+              >
+                <div>
+                  <h1 className='font-bold text-4xl md:text-5xl'>Linear regression</h1>
+                </div>
+                <div className='space-y-9'>
+                  <form onSubmit={(e) => handleClick(e)} className='flex flex-col sm:flex-row gap-2'>
+                    <input type={'number'} min={1} defaultValue={1} name={'amount'} required
+                      className={`border-2 pl-4 border-[#0070F3] outline-none bg-transparent rounded-lg p-2 w-full placeholder:text-[#3f3f46]`} placeholder={'Cantidad de dolares'} />
+                    <button type={'submit'} className='bg-[#0070f3] rounded-lg px-3 py-2 text-md font-medium'>
+                      Convert
+                    </button>
+                  </form>
+                  <div className={`relative rounded-lg border border-dashed p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
+                    <div className={`uppercase transition-all duration-300 ${linear ? 'absolute leading-4 -top-2.5 tracking-widest flex space-x-1 text-[9px] left-4' : 'top-2 font-bold w-min'}`}>
+                      <div className={`rounded-full shadow-[0_0_1px_3px_black] text-[#71717a] 
+                    ${linear ? 'bg-[#27272a] px-1.5' : 'animate-[nodata_1s_ease-in-out_1]'}
+                    ${loading && linear ? 'animate-[highlight_1s_ease-in-out_1]' : ''}`}>
+                        Result
+                      </div>
+                    </div>
+                    {linear
+                      ? <strong>${linear.predictions[0]} MXN</strong>
+                      : ''}
+                  </div>
+                </div>
+              </motion.section>
+            </AnimatePresence>
+          }
+          {modal === 'resnet' &&
+            <motion.section
+              key='resnet'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              exit={{ opacity: 0, x: 100 }}
+              className='flex flex-col justify-center gap-4'
+            >
+              <div>
+                <h1 className='font-bold text-4xl md:text-5xl'>Resnet</h1>
+              </div>
+              <div className='space-y-9'>
+                <div className={`relative rounded-lg border border-dashed p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
+                  <div className={`flex flex-col gap-8 items-center justify-center rounded-full shadow-[0_0_1px_3px_black] text-[#71717a]
+                      ${resnet ? '' : 'animate-[nodata_1s_ease-in-out_1]'}
+                      ${loading && resnet ? 'animate-[nodata_1s_ease-in-out_1]' : ''}`}>
+                    <input onChange={(e) => { handleImage(e) }}
+                      accept="image/png, image/jpg, image/jpeg"
+                      type={'file'}
+                      hidden
+                      id='image' />
+                    <label htmlFor='image' className={`uppercase cursor-pointer font-bold w-full`}>
+                      {resnet
+                        ? <div className='flex flex-col items-center md:gap-4'>
+                          <div className='w-40 h-40 relative rounded-lg'>
+                            <Image src={URL.createObjectURL(file)} className={'rounded-lg overflow-hidden'} objectFit={'contain'} alt={'resnet'} layout={'fill'} />
+                          </div>
+                        </div>
+                        : <div>
+                          <svg
+                            className='w-20 h-20 mx-auto'
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 576 512"
+                            fill="currentColor"
+                            style={{
+                              enableBackground: "new 0 0 576 512",
+                            }}
+                            xmlSpace="preserve"
+                          >
+                            <path d="M298.1 224 448 277.5V496c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V384H192v112c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V282.1c-37.2-13.2-64-48.4-64-90.1 0-17.7 14.3-32 32-32s32 14.3 32 32 14.3 32 32 32h170.1zM544 112v32c0 35.3-28.7 64-64 64h-32v35.6l-128-45.7V48c0-14.2 17.2-21.4 27.3-11.3L374.6 64h53.6c10.9 0 23.8 7.9 28.6 17.7L464 96h64c8.8 0 16 7.2 16 16zm-112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16 7.2 16 16 16 16-7.2 16-16z" />
+                          </svg>
+                          <p className='text-center'>
+                            {file?.target?.files[0] ? file?.target?.files[0].name : 'Upload image'}
+                          </p>
+                        </div>}
+                    </label>
+                    {resnet &&
+                      <span className='text-white text-xl font-bold'>
+                        {!loading ? 'Loading...' : resnet.name}
+                      </span>
+                    }
+                  </div>
                 </div>
               </div>
-              {data
-                ? <strong>${data.predictions[0]} MXN</strong>
-                : ''}
-            </div>
-          </div>
-        </section>
+            </motion.section>
+          }
+        </div>
       </main>
     </div>
   )
