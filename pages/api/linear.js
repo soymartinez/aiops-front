@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     res.status(405).send({ message: 'Method not allowed' })
     return
   }
-  const data = await fetch(process.env.API_URL, {
+  const data = await fetch(process.env.API_URL_LINEAR, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
