@@ -128,7 +128,7 @@ export default function Home() {
                       ${resnet ? '' : 'animate-[nodata_1s_ease-in-out_1]'}
                       ${loading && resnet ? 'animate-[nodata_1s_ease-in-out_1]' : ''}`}>
                       <input onChange={(e) => { handleImage(e) }}
-                        accept="image/png, image/jpeg"
+                        accept=".png, .jpg"
                         type={'file'}
                         hidden
                         id='image' />
@@ -149,21 +149,25 @@ export default function Home() {
                                 Loading...
                               </span>}
                           </div>
-                          : <div className='hover:text-white transition'>
-                            <svg
-                              className='w-20 h-20 mx-auto'
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 576 512"
-                              fill="currentColor"
-                              style={{
-                                enableBackground: "new 0 0 576 512",
-                              }}
-                              xmlSpace="preserve"
-                            >
-                              <path d="M298.1 224 448 277.5V496c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V384H192v112c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V282.1c-37.2-13.2-64-48.4-64-90.1 0-17.7 14.3-32 32-32s32 14.3 32 32 14.3 32 32 32h170.1zM544 112v32c0 35.3-28.7 64-64 64h-32v35.6l-128-45.7V48c0-14.2 17.2-21.4 27.3-11.3L374.6 64h53.6c10.9 0 23.8 7.9 28.6 17.7L464 96h64c8.8 0 16 7.2 16 16zm-112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16 7.2 16 16 16 16-7.2 16-16z" />
-                            </svg>
-                            <p className='text-center'>Upload image</p>
-                          </div>}
+                          : !loading ?
+                            <span className={`animate-pulse text-[#71717a]`}>
+                              Loading...
+                            </span>
+                            : <div className='hover:text-white/80 transition'>
+                              <svg
+                                className='w-20 h-20 mx-auto'
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 576 512"
+                                fill="currentColor"
+                                style={{
+                                  enableBackground: "new 0 0 576 512",
+                                }}
+                                xmlSpace="preserve"
+                              >
+                                <path d="M298.1 224 448 277.5V496c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V384H192v112c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V282.1c-37.2-13.2-64-48.4-64-90.1 0-17.7 14.3-32 32-32s32 14.3 32 32 14.3 32 32 32h170.1zM544 112v32c0 35.3-28.7 64-64 64h-32v35.6l-128-45.7V48c0-14.2 17.2-21.4 27.3-11.3L374.6 64h53.6c10.9 0 23.8 7.9 28.6 17.7L464 96h64c8.8 0 16 7.2 16 16zm-112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16 7.2 16 16 16 16-7.2 16-16z" />
+                              </svg>
+                              <p className='text-center'>Upload image</p>
+                            </div>}
                       </label>
                     </div>
                   </div>
