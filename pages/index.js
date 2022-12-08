@@ -118,8 +118,8 @@ export default function Home() {
                 <h1 className='font-bold text-4xl md:text-5xl'>Resnet</h1>
               </div>
               <div className='space-y-9'>
-                <div className={`relative rounded-lg border border-dashed p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
-                  <div className={`flex flex-col gap-8 items-center justify-center rounded-full shadow-[0_0_1px_3px_black] text-[#71717a]
+                <div className={`flex justify-center items-center relative rounded-lg border border-dashed h-60 p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
+                  <div className={`flex flex-col gap-2 items-center justify-center rounded-full shadow-[0_0_1px_3px_black] text-[#71717a]
                       ${resnet ? '' : 'animate-[nodata_1s_ease-in-out_1]'}
                       ${loading && resnet ? 'animate-[nodata_1s_ease-in-out_1]' : ''}`}>
                     <input onChange={(e) => { handleImage(e) }}
@@ -153,8 +153,8 @@ export default function Home() {
                         </div>}
                     </label>
                     {resnet &&
-                      <span className='text-white text-xl font-bold'>
-                        {!loading ? 'Loading...' : resnet.name}
+                      <span className={`${!loading ? 'text-[#71717a]' : 'text-white'} text-md font-bold uppercase`}>
+                        {!loading ? 'Loading...' : `#${resnet.id} - ${resnet.name}`}
                       </span>
                     }
                   </div>
