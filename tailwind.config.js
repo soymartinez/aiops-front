@@ -33,6 +33,11 @@ module.exports = {
             color: '#FF0080',
           },
         },
+        fade: {
+          '0%': { opacity: '0', filter: 'brightness(1) blur(20px)' },
+          '10%': { opacity: '1', filter: 'brightness(2) blur(10px)' },
+          '100%': { opacity: '1', filter: 'brightness(1) blur(0)' },
+        }
       })
     },
   },
