@@ -72,10 +72,10 @@ export default function Home() {
             <AnimatePresence>
               <motion.section
                 key='linear'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.7, ease: 'easeInOut' }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut', type: 'spring' }}
+                exit={{ opacity: 0, x: -50 }}
                 className='flex flex-col justify-center gap-4'
               >
                 <div>
@@ -106,61 +106,66 @@ export default function Home() {
             </AnimatePresence>
           }
           {modal === 'resnet' &&
-            <motion.section
-              key='resnet'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              exit={{ opacity: 0, x: 100 }}
-              className='flex flex-col justify-center gap-4'
-            >
-              <div>
-                <h1 className='font-bold text-4xl md:text-5xl'>Resnet</h1>
-              </div>
-              <div className='space-y-9'>
-                <div className={`flex justify-center items-center relative rounded-lg border border-dashed h-60 p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
-                  <div className={`flex flex-col gap-2 items-center justify-center rounded-full shadow-[0_0_1px_3px_black] text-[#71717a]
+            <AnimatePresence>
+              <motion.section
+                key='resnet'
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut', type: 'spring' }}
+                exit={{ opacity: 0, x: 50 }}
+                className='flex flex-col justify-center gap-4'
+              >
+                <div>
+                  <h1 className='font-bold text-4xl md:text-5xl'>Resnet</h1>
+                </div>
+                <div className='space-y-9'>
+                  <div className={`flex justify-center items-center relative rounded-lg border border-dashed h-60 p-4 ${loading ? 'animate-[rerender_1s_ease-in-out_1]' : ''} border-[#3f3f46]`}>
+                    <div className={`flex flex-col gap-2 items-center justify-center rounded-full shadow-[0_0_1px_3px_black] text-[#71717a]
                       ${resnet ? '' : 'animate-[nodata_1s_ease-in-out_1]'}
                       ${loading && resnet ? 'animate-[nodata_1s_ease-in-out_1]' : ''}`}>
-                    <input onChange={(e) => { handleImage(e) }}
-                      accept="image/png, image/jpg, image/jpeg"
-                      type={'file'}
-                      hidden
-                      id='image' />
-                    <label htmlFor='image' className={`uppercase cursor-pointer font-bold w-full`}>
-                      {resnet
-                        ? <div className='flex flex-col items-center md:gap-4'>
-                          <div className='w-40 h-40 relative rounded-lg'>
-                            <Image src={URL.createObjectURL(file)} className={'rounded-lg overflow-hidden'} objectFit={'contain'} alt={'resnet'} layout={'fill'} />
+                      <input onChange={(e) => { handleImage(e) }}
+                        accept="image/png, image/jpeg"
+                        type={'file'}
+                        hidden
+                        id='image' />
+                      <label
+                        htmlFor='image' className={`uppercase cursor-pointer font-bold w-full`}>
+                        {resnet ?
+                          <div
+                            className={`flex flex-col gap-2 items-center justify-center animate-[fade_.5s_ease-in-out]`}>
+                            {loading ? <div className='flex flex-col gap-2 animate-[fade_1s_ease-in-out]'>
+                              <div className={`w-full h-32 relative mx-auto`}>
+                                <Image src={URL.createObjectURL(file)} objectFit={'contain'} alt={'resnet'} layout={'fill'} />
+                              </div>
+                              <span className='text-white'>
+                                #{resnet.id} - {resnet.name}
+                              </span>
+                            </div> :
+                              <span className={`animate-pulse text-[#71717a]`}>
+                                Loading...
+                              </span>}
                           </div>
-                        </div>
-                        : <div>
-                          <svg
-                            className='w-20 h-20 mx-auto'
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 576 512"
-                            fill="currentColor"
-                            style={{
-                              enableBackground: "new 0 0 576 512",
-                            }}
-                            xmlSpace="preserve"
-                          >
-                            <path d="M298.1 224 448 277.5V496c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V384H192v112c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V282.1c-37.2-13.2-64-48.4-64-90.1 0-17.7 14.3-32 32-32s32 14.3 32 32 14.3 32 32 32h170.1zM544 112v32c0 35.3-28.7 64-64 64h-32v35.6l-128-45.7V48c0-14.2 17.2-21.4 27.3-11.3L374.6 64h53.6c10.9 0 23.8 7.9 28.6 17.7L464 96h64c8.8 0 16 7.2 16 16zm-112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16 7.2 16 16 16 16-7.2 16-16z" />
-                          </svg>
-                          <p className='text-center'>
-                            {file?.target?.files[0] ? file?.target?.files[0].name : 'Upload image'}
-                          </p>
-                        </div>}
-                    </label>
-                    {resnet &&
-                      <span className={`${!loading ? 'text-[#71717a]' : 'text-white'} text-md font-bold uppercase`}>
-                        {!loading ? 'Loading...' : `#${resnet.id} - ${resnet.name}`}
-                      </span>
-                    }
+                          : <div className='hover:text-white transition'>
+                            <svg
+                              className='w-20 h-20 mx-auto'
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 576 512"
+                              fill="currentColor"
+                              style={{
+                                enableBackground: "new 0 0 576 512",
+                              }}
+                              xmlSpace="preserve"
+                            >
+                              <path d="M298.1 224 448 277.5V496c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V384H192v112c0 8.8-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16V282.1c-37.2-13.2-64-48.4-64-90.1 0-17.7 14.3-32 32-32s32 14.3 32 32 14.3 32 32 32h170.1zM544 112v32c0 35.3-28.7 64-64 64h-32v35.6l-128-45.7V48c0-14.2 17.2-21.4 27.3-11.3L374.6 64h53.6c10.9 0 23.8 7.9 28.6 17.7L464 96h64c8.8 0 16 7.2 16 16zm-112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16 7.2 16 16 16 16-7.2 16-16z" />
+                            </svg>
+                            <p className='text-center'>Upload image</p>
+                          </div>}
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.section>
+              </motion.section>
+            </AnimatePresence>
           }
         </div>
       </main>
