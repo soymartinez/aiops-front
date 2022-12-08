@@ -57,16 +57,20 @@ export default function Home() {
       <main className='w-screen h-screen'>
         <div className='flex flex-col justify-center gap-12 max-w-lg mx-auto px-4 overflow-hidden md:overflow-visible'>
           <div className='grid grid-cols-2 gap-16 truncate mt-4 sm:mt-52'>
-            <button onClick={() => setModal('lineal')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setModal('lineal')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
               ${modal === 'lineal' ? 'bg-[#0070f3] text-white' : 'border border-dashed border-[#3f3f46] text-gray-100 hover:border-[#71717a] hover:text-white'}
             `}>
               Linear regression
-            </button>
-            <button onClick={() => setModal('resnet')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setModal('resnet')} className={`transition-colors rounded-lg px-3 py-1 text-base font-medium
               ${modal === 'resnet' ? 'bg-[#0070f3] text-white' : 'border border-dashed border-[#3f3f46] text-gray-100 hover:border-[#71717a] hover:text-white'}
             `}>
               Resnet
-            </button>
+            </motion.button>
           </div>
           {modal === 'lineal' &&
             <AnimatePresence>
