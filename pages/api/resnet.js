@@ -20,13 +20,12 @@ export default async function handler(req, res) {
     })
 
     if (data.status !== 200) {
-        res.status(500).send({ message: 'Something went wrong' })
-        return
+        return res.status(500).send({ message: 'Something went wrong' })
     }
 
     const result = await data.json().then((data) => data.predictions[0].classes)
     const slug = await fetch(`${baseUrl}/api/imagenet/${result}`)
     const slugData = await slug.json()
 
-    res.status(200).send({ id: result, name: slugData.result[1]})
+    return res.status(200).send({ id: result, name: slugData.result[1] })
 }
